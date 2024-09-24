@@ -1,5 +1,13 @@
-[workspace]
-members = [
-    "src/icp_token_wallet_backend"
-]
-resolver = "2"
+[package]
+name = "icp_token_wallet"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+candid = "0.8.4"
+ic-cdk = "0.6.0"
+ic-cdk-macros = "0.6.0"
+serde = "1.0.152"

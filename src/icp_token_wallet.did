@@ -1,0 +1,11 @@
+type SendArgs = record {
+    to: text;
+    amount: nat64;
+};
+
+service : {
+    "send_tokens": (SendArgs) -> (variant { Ok; Err: text });
+    "receive_tokens": (nat64) -> (variant { Ok; Err: text });
+    "get_balance": () -> (nat64) query;
+    "reset": () -> ();
+}

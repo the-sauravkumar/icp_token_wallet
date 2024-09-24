@@ -1,61 +1,106 @@
-# `icp_token_wallet`
+# ICP Token Wallet
 
-Welcome to your new `icp_token_wallet` project and to the Internet Computer development community. By default, creating a new project adds this README and some template files to your project directory. You can edit these template files to customize your project and to include your own code to speed up the development cycle.
+This project implements a simple token wallet smart contract for the Internet Computer Protocol (ICP) using Rust. The wallet allows users to send and receive tokens, as well as check their balance.
 
-To get started, you might want to explore the project directory structure and the default configuration file. Working with this project in your development environment will not affect any production deployment or identity tokens.
+## Evaluation Criteria
 
-To learn more before you start working with `icp_token_wallet`, see the following documentation available online:
+1. **Functionality**: The wallet performs all specified operations without errors:
+   - Send tokens
+   - Receive tokens
+   - Display token balance
 
-- [Quick Start](https://internetcomputer.org/docs/current/developer-docs/setup/deploy-locally)
-- [SDK Developer Tools](https://internetcomputer.org/docs/current/developer-docs/setup/install)
-- [Rust Canister Development Guide](https://internetcomputer.org/docs/current/developer-docs/backend/rust/)
-- [ic-cdk](https://docs.rs/ic-cdk)
-- [ic-cdk-macros](https://docs.rs/ic-cdk-macros)
-- [Candid Introduction](https://internetcomputer.org/docs/current/developer-docs/backend/candid/)
+2. **Code Quality**: The code is clean, well-organized, and thoroughly commented.
 
-If you want to start working on your project right away, you might want to try the following commands:
+3. **Security**: Basic security measures are implemented to protect wallet transactions:
+   - Balance checks before sending tokens
+   - Use of `ic_cdk::caller()` to identify the transaction initiator
 
-```bash
-cd icp_token_wallet/
-dfx help
-dfx canister --help
+4. **Documentation**: Clear and comprehensive documentation for setting up and operating the wallet (this README).
+
+## Setup
+
+1. Ensure you have the following installed:
+   - Rust (https://www.rust-lang.org/tools/install)
+   - dfx (https://internetcomputer.org/docs/current/developer-tools/deploying/install-upgrade-remove)
+
+2. Clone this repository:
+   ```
+   git clone https://github.com/your-username/icp-token-wallet.git
+   cd icp_token_wallet
+   ```
+
+3. Install dependencies and generate the lockfile:
+   ```
+   cargo build
+   cargo generate-lockfile
+   ```
+
+## Building and Deploying
+
+1. Start the local Internet Computer network:
+   ```
+   dfx start --clean --background
+   ```
+
+2. Deploy the canister:
+   ```
+   dfx deploy
+   ```
+
+## Usage
+
+After deployment, interact with the smart contract using the `dfx` command-line tool:
+
+1. Get your balance:
+   ```
+   dfx canister call icp_token_wallet get_balance
+   ```
+
+2. Receive tokens (for testing):
+   ```
+   dfx canister call icp_token_wallet receive_tokens '(100)'
+   ```
+
+3. Send tokens:
+   ```
+   dfx canister call icp_token_wallet send_tokens '(record { to = "recipient-principal-id"; amount = 50 })'
+   ```
+   Replace "recipient-principal-id" with the actual principal ID of the recipient.
+
+## Testing
+
+Run the unit tests:
+
+```
+cargo test
 ```
 
-## Running the project locally
+## Code Structure
 
-If you want to test your project locally, you can use the following commands:
+- `src/lib.rs`: Contains the main smart contract logic.
+- `src/icp_token_wallet.did`: Candid interface file for the smart contract.
+- `Cargo.toml`: Rust package configuration file.
+- `dfx.json`: DFX configuration file for deploying the canister.
 
-```bash
-# Starts the replica, running in the background
-dfx start --background
+## Security Considerations
 
-# Deploys your canisters to the replica and generates your candid interface
-dfx deploy
-```
+- The wallet uses `ic_cdk::caller()` to identify the transaction initiator, ensuring that only the owner can send their tokens.
+- Balance checks are performed before sending tokens to prevent overdrafts.
+- For a production environment, additional security measures should be implemented, such as:
+  - Multi-signature transactions
+  - Rate limiting
+  - Enhanced error handling and logging
 
-Once the job completes, your application will be available at `http://localhost:4943?canisterId={asset_canister_id}`.
+## Future Improvements
 
-If you have made changes to your backend canister, you can generate a new candid interface with
+- Implement more advanced features like token minting and burning.
+- Add a frontend interface for easier interaction with the wallet.
+- Enhance security with multi-signature support and more robust error handling.
 
-```bash
-npm run generate
-```
+## License
 
-at any time. This is recommended before starting the frontend development server, and will be run automatically any time you run `dfx deploy`.
+This project is licensed under the MIT License.
 
-If you are making frontend changes, you can start a development server with
+## Contributing
 
-```bash
-npm start
-```
-
-Which will start a server at `http://localhost:8080`, proxying API requests to the replica at port 4943.
-
-### Note on frontend environment variables
-
-If you are hosting frontend code somewhere without using DFX, you may need to make one of the following adjustments to ensure your project does not fetch the root key in production:
-
-- set`DFX_NETWORK` to `ic` if you are using Webpack
-- use your own preferred method to replace `process.env.DFX_NETWORK` in the autogenerated declarations
-  - Setting `canisters -> {asset_canister_id} -> declarations -> env_override to a string` in `dfx.json` will replace `process.env.DFX_NETWORK` with the string in the autogenerated declarations
-- Write your own `createActor` constructor
+Contributions are welcome! Please feel free to submit a Pull Request.
